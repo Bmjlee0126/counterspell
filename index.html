@@ -1,41 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-    
         
 
+  
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title></title>
+</head>
+<body>
+  <h1></h1>
+  <!-- 음악 재생 -->
+  <audio controls>
+      <source src="lee.mp3" type="audio/mpeg">
+  </audio> 
+
+
+</body>
+
+
+
+           
+        
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>너의 적은 나</title>
     <style>
-        .audio-controls {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 10px;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.audio-controls button {
-    background-color: #444;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-.audio-controls button:hover {
-    background-color: #555;
-}
-
-#volumeControl {
-    width: 100px;
-}
 
 body {
       margin: 0;
@@ -344,8 +335,6 @@ body {
 
 
     <script>
-
-
       // 팝업 기능
       const helpButton = document.getElementById("helpButton");
       const helpPopup = document.getElementById("helpPopup");
@@ -515,75 +504,7 @@ body {
         addLogMessage("당신이 대기했습니다.");
       });
     </script>
-
-    <script></script>
         
-    
-         <!--배경음악 컨트롤
-const bgm = document.getElementById('bgm');
-const toggleMusic = document.getElementById('toggleMusic');
-const volumeControl = document.getElementById('volumeControl');
-
-// 음악 초기 설정
-bgm.volume = 0.5;  // 초기 볼륨 50%
-
-// 시작 버튼 클릭 시 음악 재생
-document.getElementById('startButton').addEventListener('click', function() {
-    try {
-        bgm.play().catch(function(error) {
-            console.log("자동 재생이 차단되었습니다:", error);
-        });
-    } catch (error) {
-        console.log("음악 재생 중 오류 발생:", error);
-    }
-});
-
-// 음악 켜기/끄기 버튼
-toggleMusic.addEventListener('click', function() {
-    if (bgm.paused) {
-        bgm.play();
-        toggleMusic.textContent = '음악 끄기';
-    } else {
-        bgm.pause();
-        toggleMusic.textContent = '음악 켜기';
-    }
-});
-
-// 볼륨 조절
-volumeControl.addEventListener('input', function() {
-    bgm.volume = this.value;
-});
-
-// 게임 종료 시 음악 처리
-function endGame(victory) {
-    // 기존 endGame 함수의 코드를 유지하면서 다음 코드 추가
-    if (victory) {
-        bgm.volume = 0.3;  // 승리 시 볼륨 줄이기
-    } else {
-        bgm.volume = 0.2;  // 패배 시 볼륨 더 줄이기
-    }
-}
-
-// 다시 시작 시 음악 초기화
-document.getElementById('retryButton').addEventListener('click', function() {
-    // 기존의 다시 시작 코드와 함께
-    bgm.volume = 0.5;  // 볼륨 초기화
-    volumeControl.value = 0.5;
-});-->
-
-   
-    
-    <!-- 오디오 플레이어 -->
-<audio id="bgm" loop>
-    <source src="lee.mp3" type="audio/mpeg">
-    브라우저가 오디오를 지원하지 않습니다.
-</audio>
-
-<!-- 오디오 컨트롤 -->
-<div class="audio-controls">
-    <button id="toggleMusic">음악 켜기/끄기</button>
-    <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.5">
-</div>
-<script src="move.js"></script>
+    <script src="move.js"></script>
   </body>
 </html>
