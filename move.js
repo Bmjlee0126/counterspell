@@ -178,56 +178,40 @@ defendButton.addEventListener("click", () => handleAction("defend"));
 waitButton.addEventListener("click", () => handleAction("wait"));
 updateStatus();
 
-///////////
 
-//배경음악 컨트롤
-const bgm = document.getElementById("bgm");
-const toggleMusic = document.getElementById("toggleMusic");
-const volumeControl = document.getElementById("volumeControl");
+
+
+ //배경음악 컨트롤
+const bgm = document.getElementById('bgm');
+const toggleMusic = document.getElementById('toggleMusic');
+const volumeControl = document.getElementById('volumeControl');
 
 // 음악 초기 설정
-bgm.volume = 0.5; // 초기 볼륨 50%
+bgm.volume = 0.5;  // 초기 볼륨 50%
 
 // 시작 버튼 클릭 시 음악 재생
-document.getElementById("startButton").addEventListener("click", function () {
-  try {
-    bgm.play().catch(function (error) {
-      console.log("자동 재생이 차단되었습니다:", error);
-    });
-  } catch (error) {
-    console.log("음악 재생 중 오류 발생:", error);
-  }
+document.getElementById('startButton').addEventListener('click', function() {
+    try {
+        bgm.play().catch(function(error) {
+            console.log("자동 재생이 차단되었습니다:", error);
+        });
+    } catch (error) {
+        console.log("음악 재생 중 오류 발생:", error);
+    }
 });
 
 // 음악 켜기/끄기 버튼
-toggleMusic.addEventListener("click", function () {
-  if (bgm.paused) {
-    bgm.play();
-    toggleMusic.textContent = "음악 끄기";
-  } else {
-    bgm.pause();
-    toggleMusic.textContent = "음악 켜기";
-  }
+toggleMusic.addEventListener('click', function() {
+    if (bgm.paused) {
+        bgm.play();
+        toggleMusic.textContent = '음악 끄기';
+    } else {
+        bgm.pause();
+        toggleMusic.textContent = '음악 켜기';
+    }
 });
 
 // 볼륨 조절
-volumeControl.addEventListener("input", function () {
-  bgm.volume = this.value;
-});
-
-// 게임 종료 시 음악 처리
-function endGame(victory) {
-  // 기존 endGame 함수의 코드를 유지하면서 다음 코드 추가
-  if (victory) {
-    bgm.volume = 0.3; // 승리 시 볼륨 줄이기
-  } else {
-    bgm.volume = 0.2; // 패배 시 볼륨 더 줄이기
-  }
-}
-
-// 다시 시작 시 음악 초기화
-document.getElementById("retryButton").addEventListener("click", function () {
-  // 기존의 다시 시작 코드와 함께
-  bgm.volume = 0.5; // 볼륨 초기화
-  volumeControl.value = 0.5;
+volumeControl.addEventListener('input', function() {
+    bgm.volume = this.value;
 });
