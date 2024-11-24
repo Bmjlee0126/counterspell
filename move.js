@@ -3,6 +3,7 @@ const gameOverText = document.getElementById("gameOver");
 const attackButton = document.getElementById("attack");
 const defendButton = document.getElementById("defend");
 const waitButton = document.getElementById("wait");
+const retryButton = document.getElementById("retryButton");
 
 // 게임 상태
 let gameActive = true;
@@ -39,11 +40,9 @@ function applyStatus(character) {
         character === player ? "당신" : "적"
       }은(는) 독에 의해 5의 피해를 입었습니다.`
     );
-    if (character.health <= 0)
-      endGame(
-        character === player ? "패배" : "승리",
-        "독에 의해 사망했습니다."
-      );
+    if (character.health <= 0) {
+      endGame(character === player ? false : true);
+    }
   }
 }
 
@@ -129,8 +128,8 @@ function handleAction(playerAction) {
   applyStatus(enemy);
 
   // 체력 확인
-  if (player.health <= 0) endGame("패배", "당신은 적에게 쓰러졌습니다.");
-  if (enemy.health <= 0) endGame("승리", "적을 물리쳤습니다.");
+  if (player.health <= 0) endGame(false);
+  if (enemy.health <= 0) endGame(true);
 
   // 상태 업데이트
   updateStatus();
@@ -138,37 +137,70 @@ function handleAction(playerAction) {
 
 // 게임 상태 업데이트
 function updateStatus() {
-  document.getElementById("playerHealth").textContent = player.health;
-  document.getElementById("enemyHealth").textContent = enemy.health;
+  document.getElementById("playerHealth").textContent = Math.max(0, player.health);
+  document.getElementById("enemyHealth").textContent = Math.max(0, enemy.health);
   document.getElementById("playerEnergy").textContent = player.energy;
   document.getElementById("enemyEnergy").textContent = enemy.energy;
 }
 
 // 게임 종료
-function endGame(result, message) {
+function endGame(victory) {
   gameActive = false;
-  gameOverText.textContent = `${result}! ${message}`;
+  const logElement = document.getElementById("log");
+
+  if (victory) {
+    logElement.innerHTML = `
+      <p style="color: gold;">승리! 자신과의 싸움에서 승리하셨습니다.</p>
+      <blockquote style="color: lightblue;">
+        인간 최대의 승리는 내가 나를 이기는 것이다. - 플라톤<br>
+        자신을 극복하려면 자신과 싸워야 한다.<br>
+        상처야말로 삶이 내게 준 가장 귀한 것.<br>
+        왜냐하면 그 하나하나가 한걸음 한 걸음 앞으로 나간 흔적이기 때문에. - 로맹 롤랑
+      </blockquote>
+    `;
+    gameOverText.innerText = "자신과의 싸움에서 승리했습니다!";
+    gameOverText.style.color = "gold";
+  } else {
+    logElement.innerHTML = `
+      <p style="color: red;">실패! 자신과의 싸움에서 패배했습니다.</p>
+      <blockquote style="color: gray;">
+        어차피 나는 아무리 노력해도 변하지 않을 거야.<br>
+        그냥 이렇게 살다가 끝나는 게 낫겠지...
+      </blockquote>
+    `;
+    gameOverText.innerText = "자신과의 싸움에서 패배했습니다!";
+    gameOverText.style.color = "red";
+  }
+
+  // 버튼들 비활성화
   attackButton.disabled = true;
   defendButton.disabled = true;
   waitButton.disabled = true;
+  document.getElementById("surrenderButton").disabled = true;
 
-  const restartButton = document.createElement("button");
-  restartButton.textContent = "다시 시작하기";
-  restartButton.style.marginTop = "20px";
-  restartButton.addEventListener("click", restartGame);
-  gameOverText.appendChild(restartButton);
+  // 다시 하기 버튼 표시
+  retryButton.style.display = "inline-block";
 }
 
 // 게임 재시작
 function restartGame() {
+  // 게임 상태 초기화
+  gameActive = true;
   player = { health: 100, energy: 5, status: null };
   enemy = { health: 100, energy: 5, status: null };
-  gameActive = true;
+  
+  // UI 초기화
   gameOverText.textContent = "";
   log.innerHTML = "<p>새로운 전투가 시작되었습니다.</p>";
+  
+  // 버튼 상태 초기화
   attackButton.disabled = false;
   defendButton.disabled = false;
   waitButton.disabled = false;
+  document.getElementById("surrenderButton").disabled = false;
+  retryButton.style.display = "none";
+  
+  // 상태 표시 업데이트
   updateStatus();
 }
 
@@ -176,42 +208,6 @@ function restartGame() {
 attackButton.addEventListener("click", () => handleAction("attack"));
 defendButton.addEventListener("click", () => handleAction("defend"));
 waitButton.addEventListener("click", () => handleAction("wait"));
+retryButton.addEventListener("click", restartGame);
+
 updateStatus();
-
-
-
-
- //배경음악 컨트롤
-const bgm = document.getElementById('bgm');
-const toggleMusic = document.getElementById('toggleMusic');
-const volumeControl = document.getElementById('volumeControl');
-
-// 음악 초기 설정
-bgm.volume = 0.5;  // 초기 볼륨 50%
-
-// 시작 버튼 클릭 시 음악 재생
-document.getElementById('startButton').addEventListener('click', function() {
-    try {
-        bgm.play().catch(function(error) {
-            console.log("자동 재생이 차단되었습니다:", error);
-        });
-    } catch (error) {
-        console.log("음악 재생 중 오류 발생:", error);
-    }
-});
-
-// 음악 켜기/끄기 버튼
-toggleMusic.addEventListener('click', function() {
-    if (bgm.paused) {
-        bgm.play();
-        toggleMusic.textContent = '음악 끄기';
-    } else {
-        bgm.pause();
-        toggleMusic.textContent = '음악 켜기';
-    }
-});
-
-// 볼륨 조절
-volumeControl.addEventListener('input', function() {
-    bgm.volume = this.value;
-});
