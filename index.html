@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+    <html lang="ko">
+        <head>
+
+            
+
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title></title>
+        </head>
+        <body>
+            <h1></h1>
+            <!-- 음악 재생 -->
+            <audio autoplay loop>
+              <source src="lee.mp3" type="audio/mpeg">
+             </audio>
+        </body>
+    </html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>너의 적은 나</title>
+    <style>
+
+body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+
+      /* 배경 이미지 설정 */
+      background-image: url('whole-background.png');
+      background-size: cover;       /* 화면 전체에 맞추기 */
+      background-position: center; /* 중앙 정렬 */
+      background-repeat: no-repeat; /* 반복 금지 */
+      background-attachment: fixed; /* 스크롤 시 배경 고정 */
+      color: white;                 /* 텍스트 색상 */
+      text-align: center;
+    }
+    h1 {
+      margin-top: 5%;
+    }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: black;
+        color: white;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* 팝업 및 "하는 방법" 버튼 */
+      #helpButton {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background-color: blue;
+        color: white;
+        font-size: 16px;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+      }
+
+      #helpButton:hover {
+        background-color: darkblue;
+      }
+
+      .popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #222;
+        color: white;
+        padding: 20px;
+        border: 2px solid #444;
+        border-radius: 10px;
+        max-width: 500px;
+        text-align: left;
+        z-index: 1000;
+      }
+
+      .popup button {
+        background-color: red;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+
+      .popup button:hover {
+        background-color: darkred;
+      }
+
+      #overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 999;
+      }
+
+      .container {
+        margin: 40px auto;
+        max-width: 600px;
+        display: none; /* 처음에는 게임 화면 숨기기 */
+      }
+
+      .story {
+        margin: 50px auto;
+        max-width: 600px;
+      }
+
+      .story p {
+        font-size: 18px;
+        line-height: 1.5;
+        margin: 20px 0;
+      }
+
+      .story button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: green;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      .story button:hover {
+        background-color: darkgreen;
+      }
+
+      .enemy,
+      .player {
+        display: inline-block;
+        width: 150px;
+        height: 150px;
+        background-color: #555;
+        border-radius: 50%;
+        line-height: 150px;
+        color: white;
+        font-size: 24px;
+        margin: 10px;
+      }
+
+      .enemy {
+        background-color: darkred;
+      }
+
+      .log {
+        margin-top: 10px;
+        background-color: #222;
+        border: 1px solid #444;
+        padding: 10px;
+        height: 265px;
+        overflow-y: auto;
+      }
+
+      button {
+        margin: 10px;
+        padding: 10px 20px;
+        background-color: #444;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      button:hover {
+        background-color: darkgreen;
+      }
+
+      .game-over {
+        font-size: 24px;
+        color: yellow;
+      }
+
+      #surrenderButton {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background-color: red;
+        color: white;
+        font-size: 16px;
+        padding: 10px 20px;
+      }
+
+      #surrenderButton:hover {
+        background-color: darkred;
+      }
+
+      #retryButton {
+        margin-top: 20px;
+        background-color: green;
+        color: white;
+        font-size: 16px;
+        padding: 10px 20px;
+        display: none; /* 처음엔 숨겨둠 */
+      }
+
+      #retryButton:hover {
+        background-color: darkgreen;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <!-- "하는 방법" 버튼 -->
+    <button id="helpButton">하는 방법</button>
+
+    <!-- 팝업 -->
+    <div id="overlay"></div>
+    <div class="popup" id="helpPopup">
+      <h2>게임 방법</h2>
+      <p>가위바위보처럼 간단한 추측 게임입니다.</p>
+      <p>플레이어는 각각 '공격', '방어', '대기'라는 선택지가 있습니다.</p>
+      <p>플레이어는 기본적으로 100의 체력과 5의 에너지를 가지게 됩니다.</p>
+      <li>
+        <strong
+          >공격: 상대에게 20의 데미지를 입힐 수 있습니다. 에너지를 1
+          소모합니다.</strong
+        >
+      </li>
+      <li>
+        <strong
+          >방어: 상대의 공격을 막을 수 있습니다. 에너지를 1 소모합니다.</strong
+        >
+      </li>
+      <li>
+        <strong
+          >대기: 에너지를 충전할 수 있습니다. 그 외의 동작은 할 수 없습니다.</strong
+        >
+      </li>
+      <h3>무작위 이벤트</h3>
+      <li>
+        <strong
+          >독에 걸려 체력이 턴마다 5씩 깎입니다.</strong
+        >
+      </li>
+      <li>
+        <strong
+          >무작위로 체력이나 에너지가 각각 +10, +2씩 더해집니다.</strong
+        >
+      </li>
+      <h3>결정 조합과 결과</h3>
+      <li>
+        <strong
+          >공격 vs 공격: 둘 다 체력 -20
+          </strong
+        >
+      </li>
+      <li>
+        <strong
+          >공격 vs 방어: 둘 다 에너지 -1
+
+          </strong
+        >
+      </li>
+      <li>
+        <strong
+          >공격 vs 대기: 대기 쪽이 체력 -20, 에너지 +2
+          </strong
+        >
+      </li>
+      <li>
+        <strong
+          >대기 vs 대기: 둘 다 에너지 +2
+          </strong
+        >
+      </li>
+      <li>
+        <strong
+          >방어 vs 방어: 둘 다 에너지만 -1
+          </strong
+        >
+      </li>
+
+      </ul>
+      <button id="closeHelp">닫기</button>
+    </div>
+
+    <!-- 스토리 화면 -->
+    <div class="story" id="storyScreen">
+      <h1>너의 적은 나</h1>
+      <p>어느 순간부터인지는 모르겠지만 나는 사람들과 멀어져 갔었다.</p>
+      <p>
+        그러다 보니 주변 사람들과 거리감이 느껴졌고 그 과정에서 나는 점점 나의
+        내면을 갉아먹으며 결국 자신을 불쌍하고 가치 없는 존재로 여기기 시작했다.
+      </p>
+      <button id="startButton">시작하기</button>
+    </div>
+
+    <!-- 게임 화면 -->
+    <div class="container" id="gameScreen">
+      <h1>너의 적은 나</h1>
+      <div>
+        <div class="enemy">적</div>
+        <div class="player">나</div>
+      </div>
+      <div>
+        <button id="attack">공격</button>
+        <button id="defend">방어</button>
+        <button id="wait">대기</button>
+      </div>
+      <div class="log" id="log">
+        <p>게임을 시작합니다. 적의 행동을 예측하세요.</p>
+      </div>
+      <div id="gameOver" class="game-over"></div>
+    </div>
+    <div>
+      <h3>플레이어 상태</h3>
+      체력: <span id="playerHealth">100</span> | 에너지:
+      <span id="playerEnergy">5</span>
+    </div>
+    <div>
+      <h3>적 상태</h3>
+      체력: <span id="enemyHealth">100</span> | 에너지:
+      <span id="enemyEnergy">5</span>
+    </div>
+    <button id="surrenderButton">항복</button>
+    <button id="retryButton">다시 하기</button>
+    
+
+
+    <script>
+      // 팝업 기능
+      const helpButton = document.getElementById("helpButton");
+      const helpPopup = document.getElementById("helpPopup");
+      const overlay = document.getElementById("overlay");
+      const closeHelpButton = document.getElementById("closeHelp");
+
+      helpButton.addEventListener("click", () => {
+        helpPopup.style.display = "block";
+        overlay.style.display = "block";
+      });
+
+      closeHelpButton.addEventListener("click", () => {
+        helpPopup.style.display = "none";
+        overlay.style.display = "none";
+      });
+
+      overlay.addEventListener("click", () => {
+        helpPopup.style.display = "none";
+        overlay.style.display = "none";
+      });
+
+      // 게임 로직
+      document.getElementById("startButton").addEventListener("click", () => {
+        document.getElementById("storyScreen").style.display = "none";
+        document.getElementById("gameScreen").style.display = "block";
+      });
+
+      document.getElementById("attack").addEventListener("click", () => {
+        const log = document.getElementById("log");
+        log.innerHTML += "<p>공격했습니다!</p>";
+      });
+
+      document.getElementById("defend").addEventListener("click", () => {
+        const log = document.getElementById("log");
+        log.innerHTML += "<p>방어했습니다!</p>";
+      });
+
+      document.getElementById("wait").addEventListener("click", () => {
+        const log = document.getElementById("log");
+        log.innerHTML += "<p>대기하며 에너지를 충전했습니다!</p>";
+      });
+
+      // 랜덤 메시지 배열
+      const messages = [
+        "나는 왜 항상 실수만 할까?",
+        "내가 원하는 대로 아무것도 할 수 없는 것 같아. 왜 이렇게 실패하는 걸까?",
+        "왜 나는 다른 사람들과 비교하면 항상 뒤처지는 것 같지?",
+        "왜 나는 항상 부족하고, 발전이 없을까?",
+        "다른 사람들은 나보다 더 잘하는데, 나는 왜 이렇게 실패만 하는걸까?",
+        "내가 잘못한 일 때문에 사람들이 날 싫어할까?",
+        "내가 목표를 이룰 자격이 있을까?",
+        "왜 나는 항상 내 감정을 제대로 표현하지 못하는 걸까?",
+      ];
+
+      // 랜덤 메시지 선택 함수
+      function getRandomMessage() {
+        return messages[Math.floor(Math.random() * messages.length)];
+      }
+
+      // 로그에 랜덤 메시지 추가 (연두색 스타일 포함)
+      function addLogMessage(actionMessage) {
+        const logElement = document.getElementById("log");
+        logElement.innerHTML = `<p style="color: lightgreen;">${getRandomMessage()}</p><p>${actionMessage}</p>`;
+      }
+
+      // 게임 종료 시 로그 업데이트 (승리/패배)
+      function endGame(victory) {
+        const logElement = document.getElementById("log");
+        const gameOverElement = document.getElementById("gameOver");
+
+        // 게임 종료 시, 게임 오버 메시지 띄우기
+        if (victory) {
+          logElement.innerHTML = `
+      <p style="color: gold;">승리! 자신과의 싸움에서 승리하셨습니다.</p>
+      <blockquote style="color: lightblue;">
+        인간 최대의 승리는 내가 나를 이기는 것이다. - 플라톤<br>
+        자신을 극복하려면 자신과 싸워야 한다.<br>
+        상처야말로 삶이 내게 준 가장 귀한 것.<br>
+        왜냐하면 그 하나하나가 한걸음 한 걸음 앞으로 나간 흔적이기 때문에. - 로맹 롤랑
+      </blockquote>
+    `;
+    
+          gameOverElement.innerText = "자신과의 싸움에서 승리했습니다!";
+          gameOverElement.style.color = "gold";
+          gameOverElement.style.display = "block"; // 게임 오버 메시지 보이도록 설정
+        } else {
+          logElement.innerHTML = `
+      <p style="color: red;">실패! 자신과의 싸움에서 패배했습니다.</p>
+      <blockquote style="color: white;">
+        어차피 나는 아무리 노력해도 변하지 않을 거야.<br>
+        그냥 이렇게 살다가 끝나는 게 낫겠지...
+      </blockquote>
+    `;
+          gameOverElement.innerText = "자신과의 싸움에서 패배했습니다!";
+          gameOverElement.style.color = "red";
+          gameOverElement.style.display = "block"; // 게임 오버 메시지 보이도록 설정
+        }
+
+        // 버튼들 비활성화
+        document.getElementById("attack").disabled = true;
+        document.getElementById("defend").disabled = true;
+        document.getElementById("wait").disabled = true;
+        document.getElementById("surrenderButton").disabled = true;
+
+        // 다시 하기 버튼만 표시
+        document.getElementById("retryButton").style.display = "inline-block";
+      }
+
+      // 시작 버튼 클릭 시
+      document
+        .getElementById("startButton")
+        .addEventListener("click", function () {
+          document.getElementById("storyScreen").style.display = "none";
+          document.getElementById("gameScreen").style.display = "block";
+
+          // 로그 초기화
+          addLogMessage("게임을 시작합니다. 적의 행동을 예측하세요.");
+        });
+
+      // 항복 버튼 클릭 시
+      document
+        .getElementById("surrenderButton")
+        .addEventListener("click", function () {
+          endGame(false); // 실패 처리
+        });
+
+      // 다시 하기 버튼 클릭 시
+      document
+        .getElementById("retryButton")
+        .addEventListener("click", function () {
+          document.getElementById("gameOver").innerText = "";
+          document.getElementById("playerHealth").innerText = "100";
+          document.getElementById("playerEnergy").innerText = "5";
+          document.getElementById("enemyHealth").innerText = "100";
+          document.getElementById("enemyEnergy").innerText = "5";
+          document.getElementById("attack").disabled = false;
+          document.getElementById("defend").disabled = false;
+          document.getElementById("wait").disabled = false;
+          document.getElementById("surrenderButton").disabled = false;
+          document.getElementById("retryButton").style.display = "none";
+
+          // 로그 초기화
+          addLogMessage("게임을 시작합니다. 적의 행동을 예측하세요.");
+        });
+
+      // 공격 버튼 클릭 시
+      document.getElementById("attack").addEventListener("click", function () {
+        addLogMessage("당신이 공격을 했습니다!");
+        // 예제 승리 조건 추가
+        const enemyHealth = document.getElementById("enemyHealth");
+        enemyHealth.innerText = Math.max(
+          0,
+          parseInt(enemyHealth.innerText) - 20
+        );
+        if (parseInt(enemyHealth.innerText) === 0) {
+          endGame(true); // 승리 처리
+        }
+      });
+
+      // 방어 버튼 클릭 시
+      document.getElementById("defend").addEventListener("click", function () {
+        addLogMessage("당신이 방어를 했습니다!");
+      });
+  
+      // 대기 버튼 클릭 시
+      document.getElementById("wait").addEventListener("click", function () {
+        addLogMessage("당신이 대기했습니다.");
+      });
+    </script>
+        
+    <script src="move.js"></script>
+  </body>
+</html>
